@@ -4,7 +4,11 @@ import CutterGenerator from "./componets/Fomulario/CutterGereator";
 const App: React.FC = () => {
   return (
     <div>
-      <CutterGenerator />
+      <main>
+        <div>
+          <CutterGenerator />
+        </div>
+      </main>
     </div>
   );
 };

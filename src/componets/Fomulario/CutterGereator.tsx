@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
+import styled from "styled-components";
 import axios from "axios";
-import { CopyToClipboard } from "react-copy-to-clipboard"; // Importando a biblioteca para copiar para a área de transferência
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 type CutterEntry = [string, string];
 
@@ -34,12 +35,12 @@ const CutterGenerator: React.FC = () => {
   const [lastName, setLastName] = useState<string>("");
   const [title, setTitle] = useState<string>("");
   const [generatedCode, setGeneratedCode] = useState<string>("");
-  const [copyFeedback, setCopyFeedback] = useState<string>(""); // Estado para feedback de cópia
+  const [copyFeedback, setCopyFeedback] = useState<string>("");
 
   useEffect(() => {
     const fetchCutterData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/data");
+        const response = await axios.get("https://cutterapi.vercel.app/api/data");
         const formattedData: CutterEntry[] = response.data.map((entry: { texto: string; codigo: string }) => [
           removeAcentuacao(entry.texto).toLowerCase(),
           entry.codigo,
@@ -68,62 +69,116 @@ const CutterGenerator: React.FC = () => {
     setGeneratedCode(finalCode);
   };
 
-  // Função para feedback visual ao copiar
   const handleCopy = () => {
     setCopyFeedback("Código Copiado!");
-    setTimeout(() => setCopyFeedback(""), 2000); // Limpa o feedback após 2 segundos
+    setTimeout(() => setCopyFeedback(""), 2000);
   };
 
   return (
-    <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
-      <h1>Gerador de Código Cutter</h1>
-      <div style={{ marginBottom: "10px" }}>
-        <label>Último Nome (obrigatório):</label>
-        <input
+    <Container>
+      <Title>Gerador de Código Cutter</Title>
+      <FormGroup>
+        <Label>Último Nome (obrigatório):</Label>
+        <Input
           type="text"
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
           placeholder="Digite o último nome"
-          style={{ width: "100%", padding: "8px", marginTop: "5px" }}
         />
-      </div>
-      <div style={{ marginBottom: "10px" }}>
-        <label>Título da Obra (opcional):</label>
-        <input
+      </FormGroup>
+      <FormGroup>
+        <Label>Título da Obra (opcional):</Label>
+        <Input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Digite o título da obra"
-          style={{ width: "100%", padding: "8px", marginTop: "5px" }}
         />
-      </div>
-      <button onClick={generateCutterCode} style={{ padding: "10px 20px", cursor: "pointer" }}>
-        Gerar Código Cutter
-      </button>
+      </FormGroup>
+      <Button onClick={generateCutterCode}>Gerar Código Cutter</Button>
       {generatedCode && (
-        <div style={{ marginTop: "20px", fontSize: "18px", color: "green" }}>
-          <strong>Seu Código Cutter:</strong>
+        <ResultContainer>
+          <strong>Seu Código Cutter:</strong>{" "}
           <CopyToClipboard text={generatedCode} onCopy={handleCopy}>
-            <span
-              style={{
-                cursor: "pointer",
-                color: "blue",
-                textDecoration: "underline",
-              }}
-            >
-              {generatedCode}
-            </span>
+            <Code>{generatedCode}</Code>
           </CopyToClipboard>
-          {copyFeedback && (
-            <span style={{ color: "green", marginLeft: "10px", fontStyle: "italic" }}>
-              {copyFeedback}
-            </span>
-          )}
-        </div>
+          {copyFeedback && <Feedback>{copyFeedback}</Feedback>}
+        </ResultContainer>
       )}
-    </div>
+    </Container>
   );
 };
 
-export default CutterGenerator;
 
+
+
+// Styled Components
+const Container = styled.div`
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+`;
+
+const Title = styled.h1`
+  text-align: center;
+  color: #4a4a4a;
+`;
+
+const FormGroup = styled.div`
+  margin-bottom: 15px;
+  
+`;
+
+const Label = styled.label`
+  display: block;
+  font-weight: bold;
+  font-size: 16pt;
+  margin-bottom: 5px;
+  color: #333;
+`;
+
+const Input = styled.input`
+  height: 60px;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+`;
+
+const Button = styled.button`
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  height: 50px;
+
+
+  &:hover {
+    background-color: #0056b3;
+  }
+`;
+
+const ResultContainer = styled.div`
+  margin-top: 20px;
+  font-size: 18px;
+  color: green;
+`;
+
+const Code = styled.span`
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
+`;
+
+const Feedback = styled.span`
+  color: green;
+  margin-left: 10px;
+  font-style: italic;
+`;
+
+export default CutterGenerator;
