@@ -36,6 +36,7 @@ const CutterGenerator: React.FC = () => {
   const [title, setTitle] = useState<string>("");
   const [generatedCode, setGeneratedCode] = useState<string>("");
   const [copyFeedback, setCopyFeedback] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   useEffect(() => {
     const fetchCutterData = async () => {
@@ -56,9 +57,11 @@ const CutterGenerator: React.FC = () => {
 
   const generateCutterCode = () => {
     if (!lastName) {
-      alert("Por favor, insira o último nome.");
+      setErrorMessage("Por favor, insira o último nome.");
       return;
     }
+
+    setErrorMessage(""); // Clear any previous error message
 
     const normalizedLastName = removeAcentuacao(lastName).toLowerCase();
     const cutterCode = selecionaCutter(normalizedLastName, cutterData, 0);
@@ -85,6 +88,7 @@ const CutterGenerator: React.FC = () => {
           onChange={(e) => setLastName(e.target.value)}
           placeholder="Digite o último nome"
         />
+        {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
       </FormGroup>
       <FormGroup>
         <Label>Título da Obra (opcional):</Label>
@@ -109,12 +113,10 @@ const CutterGenerator: React.FC = () => {
   );
 };
 
-
-
-
 // Styled Components
 const Container = styled.div`
   max-width: 600px;
+  height: 100vh;
   margin: 0 auto;
   padding: 20px;
   font-family: Arial, sans-serif;
@@ -123,11 +125,11 @@ const Container = styled.div`
 const Title = styled.h1`
   text-align: center;
   color: #4a4a4a;
+  margin-bottom: 20px;
 `;
 
 const FormGroup = styled.div`
   margin-bottom: 15px;
-  
 `;
 
 const Label = styled.label`
@@ -157,7 +159,6 @@ const Button = styled.button`
   cursor: pointer;
   height: 50px;
 
-
   &:hover {
     background-color: #0056b3;
   }
@@ -179,6 +180,13 @@ const Feedback = styled.span`
   color: green;
   margin-left: 10px;
   font-style: italic;
+`;
+
+const ErrorMessage = styled.span`
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+  display: block;
 `;
 
 export default CutterGenerator;
