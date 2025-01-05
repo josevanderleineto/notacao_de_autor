@@ -3,7 +3,7 @@ import styled from 'styled-components';
 const FooterComponent = () => {
     return (
         <Footer>
-            <FooterText>By InfotTech</FooterText>
+            <FooterText>By InfoTech</FooterText>
             <SocialMediaIcons />
         </Footer>
     );

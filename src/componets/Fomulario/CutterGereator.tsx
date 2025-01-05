@@ -41,14 +41,14 @@ const CutterGenerator: React.FC = () => {
   useEffect(() => {
     const fetchCutterData = async () => {
       try {
-        const response = await axios.get("https://cutterapi.vercel.app/api/data");
+        const response = await axios.get("https://notacao-de-autor-api.vercel.app/api/data");
         const formattedData: CutterEntry[] = response.data.map((entry: { texto: string; codigo: string }) => [
           removeAcentuacao(entry.texto).toLowerCase(),
           entry.codigo,
         ]);
         setCutterData(formattedData.sort((a, b) => a[0].localeCompare(b[0])));
       } catch (error) {
-        console.error("Erro ao buscar dados da API Cutter:", error);
+        console.error("Erro ao buscar dados da API:", error);
       }
     };
 
